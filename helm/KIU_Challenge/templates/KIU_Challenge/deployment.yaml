@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kiu-challenge
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kiu-challenge
+  template:
+    metadata:
+      labels:
+        app: kiu-challenge
+    spec:
+      containers:
+      - name: kiu-challenge
+        image: agusbroccolli/kiu-challenge:latest
+        ports:
+        - containerPort: 3000
+        env:
+          - name: HOST
+            value: {{ .Values.env.database.host }}
+          - name: PORT
+            value: {{ .Values.env.database.port }}
+          - name: USERNAME
+            value: {{ .Values.env.database.username }}
+          - name: PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: password-secret
+                key: PASSWORD
